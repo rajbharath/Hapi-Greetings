@@ -4,7 +4,8 @@ var Hapi = require('hapi'),
     Vision = require('vision'),
     Fs = require('fs'),
     Good = require('good'),
-    Joi = require('joi');
+    Joi = require('joi'),
+    Boom = require('boom');
 
 var server = new Hapi.Server();
 
@@ -107,7 +108,7 @@ function newCardHandler(request, reply) {
   } else {
     Joi.validate(request.payload, cardSchema, function(err, val) {
       if (err) {
-        return reply(err);
+        return reply(Boom.badRequest(err.details[0].message));
       }
       var card = {
         name: val.name,
