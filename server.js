@@ -1,6 +1,7 @@
 var Hapi = require('hapi');
 var Inert = require('inert');
 var Uuid = require('uuid');
+var Vision = require('vision');
 var server = new Hapi.Server();
 
 var cards = {};
@@ -17,6 +18,21 @@ server.register(Inert, function(err) {
     throw err;
   }
   console.log('Inert registered');
+});
+
+server.register(Vision, function(err) {
+  if (err) {
+    throw err;
+  }
+  console.log('Vision registered');
+});
+
+server.views({
+  engines: {
+    html: require('jade'),
+    handlebars: require('handlebars')
+  },
+  path: './templates'
 });
 
 server.route({
