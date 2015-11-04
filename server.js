@@ -3,7 +3,17 @@ var Inert = require('inert');
 var Uuid = require('uuid');
 var Vision = require('vision');
 var Fs = require('fs');
+var Good = require('good');
+
 var server = new Hapi.Server();
+
+
+var logOptions = {
+  reporters: [{
+    reporter: require('good-console'),
+    events: { log: '*', response: '*'}
+  }]
+};
 
 var cards = loadCards();
 
@@ -28,10 +38,19 @@ server.register(Vision, function(err) {
   console.log('Vision registered');
 });
 
+server.register({
+  register: Good,
+  options: logOptions
+}, function(err) {
+  if (err) {
+    throw err;
+  }
+  console.info('Good Registered');
+});
+
 server.views({
   engines: {
-    html: require('jade'),
-    handlebars: require('handlebars')
+    html: require('handlebars')
   },
   path: './templates'
 });
@@ -91,7 +110,7 @@ function newCardHandler(request, reply) {
 }
 
 function cardsHandler(request, reply) {
-  reply.file('templates/cards.html');
+  reply.view('cards', { cards: cards });
 }
 
 function deleteCardHandler(request, reply) {
