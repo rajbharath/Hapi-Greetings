@@ -34,6 +34,13 @@ server.ext('onRequest', function(request, reply) {
   reply.continue();
 });
 
+server.ext('onPreResponse', function(request, reply) {
+  if (request.response.isBoom) {
+    return reply.view('error.html', request.response);
+  }
+  reply.continue();
+});
+
 server.register(Inert, function(err) {
   if (err) {
     throw err;
