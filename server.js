@@ -27,7 +27,7 @@ var cardSchema = Joi.object().keys({
 
 var cards = loadCards();
 
-server.connection({ port: 3000 });
+server.connection({ port: process.env.PORT || 5000 });
 
 server.ext('onRequest', function(request, reply) {
   console.log('Request received', request.path);
