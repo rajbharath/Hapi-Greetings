@@ -4,9 +4,12 @@ var Hapi = require('hapi'),
     Good = require('good'),
     Routes = require('./lib/routes'),
     CardStore = require('./lib/cardStore'),
+    UserStore = require('./lib/userStore'),
     Boom = require('boom');
 
-var cards = CardStore.initialize();
+CardStore.initialize();
+UserStore.initialize();
+
 var server = new Hapi.Server();
 
 var logOptions = {
@@ -61,6 +64,18 @@ server.register({
     throw err;
   }
   console.info('Good Registered');
+});
+
+server.register(require('hapi-auth-cookie'), function(err) {
+  if (err) console.log(err);
+
+  server.auth.strategy('default', 'cookie', {
+    password: 'myPassword',
+    redirectTo: '/login',
+    isSecure: false
+  });
+
+  server.auth.default('default');
 });
 
 server.views({
